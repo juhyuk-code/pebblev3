@@ -22,7 +22,6 @@ targets:
         excludes:
           - "**/*.entitlements"
     info:
-      path: Pebble/Info.plist
       properties:
         CFBundleDisplayName: Pebble
         UILaunchScreen:
