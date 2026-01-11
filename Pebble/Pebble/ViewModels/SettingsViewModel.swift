@@ -17,7 +17,7 @@ final class SettingsViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
-    private let blockingService: BlockingServiceProtocol
+    private var blockingService: BlockingServiceProtocol
     private let stateManager: StateManager
     private var cancellables = Set<AnyCancellable>()
 
