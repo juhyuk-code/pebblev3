@@ -24,21 +24,16 @@ targets:
           - "**/Info.plist"
     settings:
       base:
-        INFOPLIST_FILE: Pebble/Info.plist
-        CODE_SIGN_ENTITLEMENTS: Pebble/Config/Pebble.entitlements
+        GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.pebble.app
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-        TARGETED_DEVICE_FAMILY: "1"  # iPhone only
-        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
         SWIFT_VERSION: "5.9"
-    entitlements:
-      path: Pebble/Config/Pebble.entitlements
-      properties:
-        com.apple.developer.family-controls:
-          FamilyControlsLevel: individual
-        com.apple.developer.nfc.readersession.formats:
-          - NDEF
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_NFCReaderUsageDescription: "Pebble uses NFC to read your physical Pebble tag for locking and unlocking distracting apps."
 
 schemes:
   Pebble:
