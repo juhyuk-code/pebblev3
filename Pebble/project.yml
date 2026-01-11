@@ -5,6 +5,7 @@ options:
     iOS: "16.0"
   xcodeVersion: "15.0"
   generateEmptyDirectories: true
+  createIntermediateGroups: true
 
 settings:
   base:
@@ -18,25 +19,18 @@ targets:
     type: application
     platform: iOS
     sources:
-      - path: Pebble
-        excludes:
-          - "**/*.entitlements"
-    info:
-      properties:
-        CFBundleDisplayName: Pebble
-        UILaunchScreen:
-          UIColorName: LaunchBackgroundColor
-        UISupportedInterfaceOrientations:
-          - UIInterfaceOrientationPortrait
-        NFCReaderUsageDescription: "Pebble uses NFC to read your physical Pebble tag for locking and unlocking distracting apps."
+      - Pebble
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.pebble.app
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: "1"
-        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
         SWIFT_VERSION: "5.9"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_NFCReaderUsageDescription: "Pebble uses NFC to read your physical Pebble tag for locking and unlocking distracting apps."
 
 schemes:
   Pebble:
