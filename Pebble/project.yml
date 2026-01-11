@@ -1,0 +1,53 @@
+name: Pebble
+options:
+  bundleIdPrefix: com.pebble
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  Pebble:
+    type: application
+    platform: iOS
+    sources:
+      - path: Pebble
+        excludes:
+          - "**/*.entitlements"
+          - "**/Info.plist"
+    settings:
+      base:
+        INFOPLIST_FILE: Pebble/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Pebble/Config/Pebble.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: com.pebble.app
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        TARGETED_DEVICE_FAMILY: "1"  # iPhone only
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        SWIFT_VERSION: "5.9"
+    entitlements:
+      path: Pebble/Config/Pebble.entitlements
+      properties:
+        com.apple.developer.family-controls:
+          FamilyControlsLevel: individual
+        com.apple.developer.nfc.readersession.formats:
+          - NDEF
+
+schemes:
+  Pebble:
+    build:
+      targets:
+        Pebble: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    archive:
+      config: Release
