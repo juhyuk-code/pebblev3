@@ -32,7 +32,7 @@ final class BlockingService: BlockingServiceProtocol {
     private let store = ManagedSettingsStore()
     private let authorizationCenter = AuthorizationCenter.shared
 
-    private(set) var currentSelection: FamilyActivitySelection {
+    var currentSelection: FamilyActivitySelection {
         get {
             loadSelection() ?? FamilyActivitySelection()
         }
