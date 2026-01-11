@@ -15,7 +15,6 @@ struct StatusIndicator: View {
             Image(systemName: state.iconName)
                 .font(.system(size: 64))
                 .foregroundColor(stateColor)
-                .symbolEffect(.bounce, value: state)
 
             // Status text
             Text(state.displayText)
