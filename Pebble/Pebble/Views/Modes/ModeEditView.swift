@@ -79,86 +79,71 @@ struct ModeEditView: View {
                             }
                             .buttonStyle(.plain)
 
-                            // List of blocked items
+                            // Summary of blocked items
                             if hasBlockedItems {
                                 VStack(spacing: 0) {
-                                    // Apps
-                                    ForEach(Array(mode.selection.applicationTokens), id: \.self) { token in
-                                        VStack(spacing: 0) {
-                                            HStack(spacing: 12) {
-                                                Label(token)
-                                                    .labelStyle(.iconOnly)
-                                                    .frame(width: 40, height: 40)
+                                    // Apps count
+                                    if !mode.selection.applicationTokens.isEmpty {
+                                        HStack(spacing: 12) {
+                                            Image(systemName: "app.fill")
+                                                .font(.system(size: 24))
+                                                .foregroundColor(.blue)
+                                                .frame(width: 40, height: 40)
 
-                                                Label(token)
-                                                    .labelStyle(.titleOnly)
-                                                    .font(.system(size: 16))
-                                                    .lineLimit(1)
+                                            Text("\(mode.selection.applicationTokens.count) app\(mode.selection.applicationTokens.count == 1 ? "" : "s") blocked")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(.primary)
 
-                                                Spacer()
-                                            }
-                                            .padding(.horizontal, 16)
-                                            .padding(.vertical, 8)
+                                            Spacer()
+                                        }
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 12)
 
+                                        if !mode.selection.categoryTokens.isEmpty || !mode.selection.webDomainTokens.isEmpty {
                                             Divider()
                                                 .padding(.leading, 68)
                                         }
                                     }
 
-                                    // Categories
-                                    ForEach(Array(mode.selection.categoryTokens), id: \.self) { token in
-                                        VStack(spacing: 0) {
-                                            HStack(spacing: 12) {
-                                                Label(token)
-                                                    .labelStyle(.iconOnly)
-                                                    .frame(width: 40, height: 40)
+                                    // Categories count
+                                    if !mode.selection.categoryTokens.isEmpty {
+                                        HStack(spacing: 12) {
+                                            Image(systemName: "folder.fill")
+                                                .font(.system(size: 24))
+                                                .foregroundColor(.orange)
+                                                .frame(width: 40, height: 40)
 
-                                                Label(token)
-                                                    .labelStyle(.titleOnly)
-                                                    .font(.system(size: 16))
-                                                    .lineLimit(1)
+                                            Text("\(mode.selection.categoryTokens.count) categor\(mode.selection.categoryTokens.count == 1 ? "y" : "ies") blocked")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(.primary)
 
-                                                Spacer()
+                                            Spacer()
+                                        }
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 12)
 
-                                                Text("Category")
-                                                    .font(.system(size: 12))
-                                                    .foregroundColor(.secondary)
-                                                    .padding(.horizontal, 8)
-                                                    .padding(.vertical, 4)
-                                                    .background(
-                                                        Capsule()
-                                                            .fill(Color(.systemGray5))
-                                                    )
-                                            }
-                                            .padding(.horizontal, 16)
-                                            .padding(.vertical, 8)
-
+                                        if !mode.selection.webDomainTokens.isEmpty {
                                             Divider()
                                                 .padding(.leading, 68)
                                         }
                                     }
 
-                                    // Websites
-                                    ForEach(Array(mode.selection.webDomainTokens), id: \.self) { token in
-                                        VStack(spacing: 0) {
-                                            HStack(spacing: 12) {
-                                                Label(token)
-                                                    .labelStyle(.iconOnly)
-                                                    .frame(width: 40, height: 40)
+                                    // Websites count
+                                    if !mode.selection.webDomainTokens.isEmpty {
+                                        HStack(spacing: 12) {
+                                            Image(systemName: "globe")
+                                                .font(.system(size: 24))
+                                                .foregroundColor(.green)
+                                                .frame(width: 40, height: 40)
 
-                                                Label(token)
-                                                    .labelStyle(.titleOnly)
-                                                    .font(.system(size: 16))
-                                                    .lineLimit(1)
+                                            Text("\(mode.selection.webDomainTokens.count) website\(mode.selection.webDomainTokens.count == 1 ? "" : "s") blocked")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(.primary)
 
-                                                Spacer()
-                                            }
-                                            .padding(.horizontal, 16)
-                                            .padding(.vertical, 8)
-
-                                            Divider()
-                                                .padding(.leading, 68)
+                                            Spacer()
                                         }
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 12)
                                     }
                                 }
                                 .background(
