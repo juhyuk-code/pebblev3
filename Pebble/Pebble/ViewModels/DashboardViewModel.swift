@@ -91,10 +91,12 @@ final class DashboardViewModel: ObservableObject {
 
         isScanning = false
 
-        // Show result feedback (except for cancellation)
-        if case .cancelled = result {
-            // Don't show feedback for user cancellation
-        } else {
+        // Only show alert for errors/invalid tags, not for successful scans
+        switch result {
+        case .valid, .cancelled:
+            // Don't show any alert
+            break
+        case .invalid, .error:
             showingScanResult = true
         }
     }

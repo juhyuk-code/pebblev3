@@ -4,6 +4,7 @@ import SwiftUI
 struct PebbleDeviceView: View {
 
     var isScanning: Bool = false
+    var isLocked: Bool = false
 
     private let imageSize: CGFloat = 220
 
@@ -13,7 +14,16 @@ struct PebbleDeviceView: View {
             .aspectRatio(contentMode: .fit)
             .frame(width: imageSize, height: imageSize)
             .opacity(isScanning ? 0.7 : 1.0)
+            .shadow(
+                color: isLocked ? Color.white.opacity(0.3) : Color.clear,
+                radius: isLocked ? 30 : 0
+            )
+            .shadow(
+                color: isLocked ? Color.white.opacity(0.2) : Color.clear,
+                radius: isLocked ? 60 : 0
+            )
             .animation(.easeInOut(duration: 0.3), value: isScanning)
+            .animation(.easeInOut(duration: 0.3), value: isLocked)
     }
 }
 
@@ -22,6 +32,13 @@ struct PebbleDeviceView: View {
 #Preview {
     PebbleDeviceView()
         .padding()
+}
+
+#Preview("Locked with Glow") {
+    ZStack {
+        Color.black.ignoresSafeArea()
+        PebbleDeviceView(isLocked: true)
+    }
 }
 
 #Preview("Scanning") {

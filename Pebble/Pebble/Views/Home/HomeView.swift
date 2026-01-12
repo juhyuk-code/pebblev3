@@ -20,7 +20,7 @@ struct HomeView: View {
     }
 
     private var secondaryTextColor: Color {
-        viewModel.isLocked ? .gray : .secondary
+        viewModel.isLocked ? Color(white: 0.65) : .secondary
     }
 
     private var buttonBackgroundColor: Color {
@@ -42,7 +42,7 @@ struct HomeView: View {
                 Spacer()
 
                 // Pebble device image
-                PebbleDeviceView(isScanning: viewModel.isScanning)
+                PebbleDeviceView(isScanning: viewModel.isScanning, isLocked: viewModel.isLocked)
 
                 // Mode selector
                 ModeSelector(modeManager: modeManager, showingSheet: $showingModeSheet)
