@@ -66,7 +66,15 @@ final class DashboardViewModel: ObservableObject {
 
         isScanning = true
 
-        let result = await nfcService.startScanning()
+        // Check if mock NFC should be used (can be toggled at runtime)
+        let service: NFCServiceProtocol
+        if UserDefaults.standard.bool(forKey: Constants.StorageKeys.debugUseMockNFC) {
+            service = MockNFCService()
+        } else {
+            service = nfcService
+        }
+
+        let result = await service.startScanning()
         scanResult = result
 
         if result.shouldToggleState {
