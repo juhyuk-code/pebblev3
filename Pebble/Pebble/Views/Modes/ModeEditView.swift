@@ -85,25 +85,38 @@ struct ModeEditView: View {
                                     // Apps
                                     ForEach(Array(mode.selection.applicationTokens), id: \.self) { token in
                                         VStack(spacing: 0) {
-                                            HStack {
+                                            HStack(spacing: 12) {
                                                 Label(token)
+                                                    .labelStyle(.iconOnly)
+                                                    .frame(width: 40, height: 40)
+
+                                                Label(token)
+                                                    .labelStyle(.titleOnly)
                                                     .font(.system(size: 16))
+                                                    .lineLimit(1)
+
                                                 Spacer()
                                             }
                                             .padding(.horizontal, 16)
-                                            .padding(.vertical, 12)
+                                            .padding(.vertical, 8)
 
                                             Divider()
-                                                .padding(.leading, 16)
+                                                .padding(.leading, 68)
                                         }
                                     }
 
                                     // Categories
                                     ForEach(Array(mode.selection.categoryTokens), id: \.self) { token in
                                         VStack(spacing: 0) {
-                                            HStack {
+                                            HStack(spacing: 12) {
                                                 Label(token)
+                                                    .labelStyle(.iconOnly)
+                                                    .frame(width: 40, height: 40)
+
+                                                Label(token)
+                                                    .labelStyle(.titleOnly)
                                                     .font(.system(size: 16))
+                                                    .lineLimit(1)
 
                                                 Spacer()
 
@@ -118,26 +131,33 @@ struct ModeEditView: View {
                                                     )
                                             }
                                             .padding(.horizontal, 16)
-                                            .padding(.vertical, 12)
+                                            .padding(.vertical, 8)
 
                                             Divider()
-                                                .padding(.leading, 16)
+                                                .padding(.leading, 68)
                                         }
                                     }
 
                                     // Websites
                                     ForEach(Array(mode.selection.webDomainTokens), id: \.self) { token in
                                         VStack(spacing: 0) {
-                                            HStack {
+                                            HStack(spacing: 12) {
                                                 Label(token)
+                                                    .labelStyle(.iconOnly)
+                                                    .frame(width: 40, height: 40)
+
+                                                Label(token)
+                                                    .labelStyle(.titleOnly)
                                                     .font(.system(size: 16))
+                                                    .lineLimit(1)
+
                                                 Spacer()
                                             }
                                             .padding(.horizontal, 16)
-                                            .padding(.vertical, 12)
+                                            .padding(.vertical, 8)
 
                                             Divider()
-                                                .padding(.leading, 16)
+                                                .padding(.leading, 68)
                                         }
                                     }
                                 }
