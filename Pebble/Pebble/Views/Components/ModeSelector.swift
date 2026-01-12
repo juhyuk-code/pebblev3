@@ -5,6 +5,15 @@ struct ModeSelector: View {
 
     @ObservedObject var modeManager: ModeManager
     @Binding var showingSheet: Bool
+    var isLocked: Bool = false
+
+    private var labelColor: Color {
+        isLocked ? Color(white: 0.7) : .secondary
+    }
+
+    private var valueColor: Color {
+        isLocked ? .white : .primary
+    }
 
     var body: some View {
         Button {
@@ -12,15 +21,15 @@ struct ModeSelector: View {
         } label: {
             HStack(spacing: 6) {
                 Text("Mode:")
-                    .foregroundColor(.secondary)
+                    .foregroundColor(labelColor)
 
                 Text(modeManager.selectedMode?.name ?? "Select Mode")
                     .fontWeight(.medium)
-                    .foregroundColor(.primary)
+                    .foregroundColor(valueColor)
 
                 Image(systemName: "chevron.down")
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(labelColor)
             }
             .font(.system(size: 16))
         }

@@ -15,12 +15,16 @@ struct PebbleDeviceView: View {
             .frame(width: imageSize, height: imageSize)
             .opacity(isScanning ? 0.7 : 1.0)
             .shadow(
-                color: isLocked ? Color.white.opacity(0.3) : Color.clear,
-                radius: isLocked ? 30 : 0
+                color: isLocked ? Color.white.opacity(0.6) : Color.clear,
+                radius: isLocked ? 20 : 0
+            )
+            .shadow(
+                color: isLocked ? Color.white.opacity(0.4) : Color.clear,
+                radius: isLocked ? 40 : 0
             )
             .shadow(
                 color: isLocked ? Color.white.opacity(0.2) : Color.clear,
-                radius: isLocked ? 60 : 0
+                radius: isLocked ? 80 : 0
             )
             .animation(.easeInOut(duration: 0.3), value: isScanning)
             .animation(.easeInOut(duration: 0.3), value: isLocked)

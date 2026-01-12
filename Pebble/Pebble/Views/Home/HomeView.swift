@@ -15,16 +15,12 @@ struct HomeView: View {
         viewModel.isLocked ? lockedBackgroundColor : freeBackgroundColor
     }
 
-    private var textColor: Color {
-        viewModel.isLocked ? .white : .primary
-    }
-
-    private var secondaryTextColor: Color {
-        viewModel.isLocked ? Color(white: 0.65) : .secondary
-    }
-
     private var buttonBackgroundColor: Color {
-        viewModel.isLocked ? Color(.systemGray6) : Color(.systemGray5)
+        viewModel.isLocked ? Color(white: 0.15) : Color(.systemGray5)
+    }
+
+    private var buttonTextColor: Color {
+        viewModel.isLocked ? .white : .primary
     }
 
     var body: some View {
@@ -36,7 +32,7 @@ struct HomeView: View {
 
             VStack(spacing: 0) {
                 // Usage time badge at top
-                UsageTimeBadge(startDate: viewModel.lockedAt)
+                UsageTimeBadge(startDate: viewModel.lockedAt, isLocked: viewModel.isLocked)
                     .padding(.top, 40)
 
                 Spacer()
@@ -45,16 +41,15 @@ struct HomeView: View {
                 PebbleDeviceView(isScanning: viewModel.isScanning, isLocked: viewModel.isLocked)
 
                 // Mode selector
-                ModeSelector(modeManager: modeManager, showingSheet: $showingModeSheet)
+                ModeSelector(modeManager: modeManager, showingSheet: $showingModeSheet, isLocked: viewModel.isLocked)
                     .padding(.top, 24)
-                    .foregroundColor(textColor)
 
                 // Blocking summary
                 BlockingSummary(
                     appCount: modeManager.selectedMode?.appCount ?? 0,
-                    websiteCount: modeManager.selectedMode?.websiteCount ?? 0
+                    websiteCount: modeManager.selectedMode?.websiteCount ?? 0,
+                    isLocked: viewModel.isLocked
                 )
-                .foregroundColor(secondaryTextColor)
                 .padding(.top, 8)
 
                 Spacer()
@@ -67,7 +62,7 @@ struct HomeView: View {
                 } label: {
                     Text(viewModel.isLocked ? "Unpebble device" : "Pebble device")
                         .font(.system(size: 17, weight: .medium))
-                        .foregroundColor(.primary)
+                        .foregroundColor(buttonTextColor)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 18)
                         .background(

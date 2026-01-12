@@ -5,11 +5,16 @@ struct BlockingSummary: View {
 
     let appCount: Int
     let websiteCount: Int
+    var isLocked: Bool = false
+
+    private var textColor: Color {
+        isLocked ? Color(white: 0.7) : .secondary
+    }
 
     var body: some View {
         Text(summaryText)
             .font(.system(size: 14))
-            .foregroundColor(.secondary)
+            .foregroundColor(textColor)
     }
 
     private var summaryText: String {
