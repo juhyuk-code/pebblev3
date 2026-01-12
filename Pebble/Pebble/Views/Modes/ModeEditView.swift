@@ -15,84 +15,192 @@ struct ModeEditView: View {
     // Background color matching the app
     private let backgroundColor = Color(red: 0.93, green: 0.91, blue: 0.89)
 
+    /// Check if there are any blocked items
+    private var hasBlockedItems: Bool {
+        !mode.selection.applicationTokens.isEmpty ||
+        !mode.selection.categoryTokens.isEmpty ||
+        !mode.selection.webDomainTokens.isEmpty
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
                 backgroundColor
                     .ignoresSafeArea()
 
-                VStack(spacing: 24) {
-                    // Mode name field
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Mode name")
-                            .font(.system(size: 13))
-                            .foregroundColor(.secondary)
-                            .padding(.horizontal, 4)
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Mode name field
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Mode name")
+                                .font(.system(size: 13))
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 4)
 
-                        TextField("Enter mode name", text: $mode.name)
-                            .font(.system(size: 17))
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 14)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(.systemGray6))
-                            )
-                    }
-                    .padding(.horizontal, 20)
+                            TextField("Enter mode name", text: $mode.name)
+                                .font(.system(size: 17))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 14)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color(.systemGray6))
+                                )
+                        }
+                        .padding(.horizontal, 20)
 
-                    // App selection
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Blocked apps")
-                            .font(.system(size: 13))
-                            .foregroundColor(.secondary)
-                            .padding(.horizontal, 4)
+                        // App selection
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Blocked apps")
+                                .font(.system(size: 13))
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 4)
 
-                        Button {
-                            showingAppPicker = true
-                        } label: {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 4) {
+                            // Select apps button
+                            Button {
+                                showingAppPicker = true
+                            } label: {
+                                HStack {
                                     Text("Select apps to block")
                                         .font(.system(size: 17))
                                         .foregroundColor(.primary)
 
-                                    Text(mode.summaryText)
-                                        .font(.system(size: 14))
+                                    Spacer()
+
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: 14, weight: .semibold))
                                         .foregroundColor(.secondary)
                                 }
-
-                                Spacer()
-
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.secondary)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 14)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color(.systemGray6))
+                                )
                             }
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 14)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(.systemGray6))
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .padding(.horizontal, 20)
+                            .buttonStyle(.plain)
 
-                    Spacer()
+                            // List of blocked items
+                            if hasBlockedItems {
+                                VStack(spacing: 0) {
+                                    // Apps
+                                    ForEach(Array(mode.selection.applicationTokens), id: \.self) { token in
+                                        HStack {
+                                            Label(token)
+                                                .labelStyle(.iconOnly)
+                                                .scaleEffect(0.8)
+                                                .frame(width: 32, height: 32)
 
-                    // Delete button (only for non-default modes)
-                    if !isNewMode && !mode.isDefault {
-                        Button {
-                            showingDeleteConfirmation = true
-                        } label: {
-                            Text("Delete Mode")
-                                .font(.system(size: 17))
-                                .foregroundColor(.red)
+                                            Label(token)
+                                                .labelStyle(.titleOnly)
+                                                .font(.system(size: 16))
+                                                .foregroundColor(.primary)
+
+                                            Spacer()
+                                        }
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 10)
+
+                                        if token != mode.selection.applicationTokens.sorted(by: { "\($0)" < "\($1)" }).last ||
+                                           !mode.selection.categoryTokens.isEmpty ||
+                                           !mode.selection.webDomainTokens.isEmpty {
+                                            Divider()
+                                                .padding(.leading, 56)
+                                        }
+                                    }
+
+                                    // Categories
+                                    ForEach(Array(mode.selection.categoryTokens), id: \.self) { token in
+                                        HStack {
+                                            Label(token)
+                                                .labelStyle(.iconOnly)
+                                                .scaleEffect(0.8)
+                                                .frame(width: 32, height: 32)
+
+                                            Label(token)
+                                                .labelStyle(.titleOnly)
+                                                .font(.system(size: 16))
+                                                .foregroundColor(.primary)
+
+                                            Spacer()
+
+                                            Text("Category")
+                                                .font(.system(size: 12))
+                                                .foregroundColor(.secondary)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 4)
+                                                .background(
+                                                    Capsule()
+                                                        .fill(Color(.systemGray5))
+                                                )
+                                        }
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 10)
+
+                                        if token != mode.selection.categoryTokens.sorted(by: { "\($0)" < "\($1)" }).last ||
+                                           !mode.selection.webDomainTokens.isEmpty {
+                                            Divider()
+                                                .padding(.leading, 56)
+                                        }
+                                    }
+
+                                    // Websites
+                                    ForEach(Array(mode.selection.webDomainTokens), id: \.self) { token in
+                                        HStack {
+                                            Image(systemName: "globe")
+                                                .font(.system(size: 20))
+                                                .foregroundColor(.secondary)
+                                                .frame(width: 32, height: 32)
+
+                                            Label(token)
+                                                .labelStyle(.titleOnly)
+                                                .font(.system(size: 16))
+                                                .foregroundColor(.primary)
+
+                                            Spacer()
+                                        }
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 10)
+
+                                        if token != mode.selection.webDomainTokens.sorted(by: { "\($0)" < "\($1)" }).last {
+                                            Divider()
+                                                .padding(.leading, 56)
+                                        }
+                                    }
+                                }
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color(.systemGray6))
+                                )
+                            } else {
+                                Text("No apps selected")
+                                    .font(.system(size: 15))
+                                    .foregroundColor(.secondary)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 20)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color(.systemGray6))
+                                    )
+                            }
                         }
-                        .padding(.bottom, 20)
+                        .padding(.horizontal, 20)
+
+                        // Delete button (only for non-default modes)
+                        if !isNewMode && !mode.isDefault {
+                            Button {
+                                showingDeleteConfirmation = true
+                            } label: {
+                                Text("Delete Mode")
+                                    .font(.system(size: 17))
+                                    .foregroundColor(.red)
+                            }
+                            .padding(.top, 20)
+                        }
+
+                        Spacer(minLength: 40)
                     }
+                    .padding(.top, 24)
                 }
-                .padding(.top, 24)
             }
             .navigationTitle(isNewMode ? "Create Mode" : "Edit Mode")
             .navigationBarTitleDisplayMode(.inline)
