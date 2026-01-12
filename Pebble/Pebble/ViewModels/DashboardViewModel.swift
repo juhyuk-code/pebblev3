@@ -19,6 +19,7 @@ final class DashboardViewModel: ObservableObject {
 
     private let stateManager: StateManager
     private let nfcService: NFCServiceProtocol
+    private let blockingService: BlockingServiceProtocol
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Computed Properties
@@ -31,11 +32,21 @@ final class DashboardViewModel: ObservableObject {
         emergencyUsesRemaining > 0
     }
 
+    var blockedAppCount: Int {
+        let selection = blockingService.currentSelection
+        return selection.applicationTokens.count + selection.categoryTokens.count
+    }
+
+    var blockedWebsiteCount: Int {
+        blockingService.currentSelection.webDomainTokens.count
+    }
+
     // MARK: - Initialization
 
-    init(stateManager: StateManager, nfcService: NFCServiceProtocol) {
+    init(stateManager: StateManager, nfcService: NFCServiceProtocol, blockingService: BlockingServiceProtocol) {
         self.stateManager = stateManager
         self.nfcService = nfcService
+        self.blockingService = blockingService
 
         // Observe state changes
         stateManager.$lockState
@@ -123,7 +134,8 @@ extension DashboardViewModel {
     static var preview: DashboardViewModel {
         DashboardViewModel(
             stateManager: .preview,
-            nfcService: MockNFCService()
+            nfcService: MockNFCService(),
+            blockingService: MockBlockingService()
         )
     }
 }

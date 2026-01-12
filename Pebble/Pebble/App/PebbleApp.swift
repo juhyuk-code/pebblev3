@@ -30,7 +30,11 @@ struct PebbleApp: App {
         let state = StateManager(blockingService: blocking)
 
         // Initialize view models
-        let dashboard = DashboardViewModel(stateManager: state, nfcService: nfc)
+        let dashboard = DashboardViewModel(
+            stateManager: state,
+            nfcService: nfc,
+            blockingService: blocking
+        )
         let settings = SettingsViewModel(blockingService: blocking, stateManager: state)
 
         // Wrap in StateObjects
@@ -43,7 +47,7 @@ struct PebbleApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(
+            MainTabView(
                 dashboardViewModel: dashboardViewModel,
                 settingsViewModel: settingsViewModel
             )
@@ -52,19 +56,5 @@ struct PebbleApp: App {
                 stateManager.restoreState()
             }
         }
-    }
-}
-
-/// Root content view that handles routing
-struct ContentView: View {
-
-    @ObservedObject var dashboardViewModel: DashboardViewModel
-    @ObservedObject var settingsViewModel: SettingsViewModel
-
-    var body: some View {
-        DashboardView(
-            viewModel: dashboardViewModel,
-            settingsViewModel: settingsViewModel
-        )
     }
 }
