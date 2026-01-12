@@ -32,6 +32,14 @@ final class BlockingService: BlockingServiceProtocol {
     private let store = ManagedSettingsStore()
     private let authorizationCenter = AuthorizationCenter.shared
 
+    /// App Group identifier for shared storage between main app and extensions
+    private static let appGroupIdentifier = "group.com.pebble.app"
+
+    /// Shared UserDefaults for app group
+    private var sharedDefaults: UserDefaults? {
+        UserDefaults(suiteName: Self.appGroupIdentifier)
+    }
+
     var currentSelection: FamilyActivitySelection {
         get {
             loadSelection() ?? FamilyActivitySelection()
@@ -66,12 +74,16 @@ final class BlockingService: BlockingServiceProtocol {
 
         // Shield web domains (if any selected)
         store.shield.webDomains = selection.webDomainTokens.isEmpty ? nil : selection.webDomainTokens
+
+        print("[BlockingService] Shield applied - Apps: \(selection.applicationTokens.count), Categories: \(selection.categoryTokens.count), WebDomains: \(selection.webDomainTokens.count)")
     }
 
     func removeShield() {
         store.shield.applications = nil
         store.shield.applicationCategories = nil
         store.shield.webDomains = nil
+
+        print("[BlockingService] Shield removed")
     }
 
     // MARK: - App Removal Prevention
@@ -80,26 +92,32 @@ final class BlockingService: BlockingServiceProtocol {
         store.application.denyAppRemoval = enabled
     }
 
-    // MARK: - Persistence
+    // MARK: - Persistence (using App Groups for shared access)
 
     private func saveSelection(_ selection: FamilyActivitySelection) {
         do {
             let data = try PropertyListEncoder().encode(selection)
+            // Save to both standard and shared defaults for compatibility
             UserDefaults.standard.set(data, forKey: Constants.StorageKeys.appSelection)
+            sharedDefaults?.set(data, forKey: Constants.StorageKeys.appSelection)
         } catch {
-            print("Failed to save selection: \(error)")
+            print("[BlockingService] Failed to save selection: \(error)")
         }
     }
 
     private func loadSelection() -> FamilyActivitySelection? {
-        guard let data = UserDefaults.standard.data(forKey: Constants.StorageKeys.appSelection) else {
+        // Try shared defaults first, then fall back to standard
+        let data = sharedDefaults?.data(forKey: Constants.StorageKeys.appSelection)
+            ?? UserDefaults.standard.data(forKey: Constants.StorageKeys.appSelection)
+
+        guard let data = data else {
             return nil
         }
 
         do {
             return try PropertyListDecoder().decode(FamilyActivitySelection.self, from: data)
         } catch {
-            print("Failed to load selection: \(error)")
+            print("[BlockingService] Failed to load selection: \(error)")
             return nil
         }
     }

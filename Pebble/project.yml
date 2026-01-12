@@ -31,12 +31,32 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_NFCReaderUsageDescription: "Pebble uses NFC to read your physical Pebble tag for locking and unlocking distracting apps."
+        CODE_SIGN_ENTITLEMENTS: Pebble/Pebble.entitlements
+    dependencies:
+      - target: PebbleShield
+
+  PebbleShield:
+    type: app-extension
+    platform: iOS
+    sources:
+      - PebbleShield
+    info:
+      path: PebbleShield/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pebble.app.shield
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_VERSION: "5.9"
+        CODE_SIGN_ENTITLEMENTS: PebbleShield/PebbleShield.entitlements
+    entitlements:
+      path: PebbleShield/PebbleShield.entitlements
 
 schemes:
   Pebble:
     build:
       targets:
         Pebble: all
+        PebbleShield: all
     run:
       config: Debug
     test:
