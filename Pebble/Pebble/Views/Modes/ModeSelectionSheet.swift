@@ -5,6 +5,7 @@ struct ModeSelectionSheet: View {
 
     @ObservedObject var modeManager: ModeManager
     @Binding var isPresented: Bool
+    var isLocked: Bool = false
     @State private var editingMode: BlockingMode?
     @State private var isCreatingMode: Bool = false
 
@@ -28,8 +29,11 @@ struct ModeSelectionSheet: View {
                         ModeRow(
                             mode: mode,
                             isSelected: mode.id == modeManager.selectedModeId,
+                            isLocked: isLocked,
                             onSelect: {
-                                modeManager.selectMode(mode)
+                                if !isLocked {
+                                    modeManager.selectMode(mode)
+                                }
                             },
                             onEdit: {
                                 editingMode = mode
@@ -37,9 +41,11 @@ struct ModeSelectionSheet: View {
                         )
                     }
 
-                    // Create mode row
-                    CreateModeRow {
-                        isCreatingMode = true
+                    // Create mode row (hidden when locked)
+                    if !isLocked {
+                        CreateModeRow {
+                            isCreatingMode = true
+                        }
                     }
                 }
                 .padding(.horizontal, 20)
@@ -68,14 +74,16 @@ struct ModeSelectionSheet: View {
             ModeEditView(
                 modeManager: modeManager,
                 mode: mode,
-                isNewMode: false
+                isNewMode: false,
+                isLocked: isLocked
             )
         }
         .sheet(isPresented: $isCreatingMode) {
             ModeEditView(
                 modeManager: modeManager,
                 mode: BlockingMode(name: ""),
-                isNewMode: true
+                isNewMode: true,
+                isLocked: false
             )
         }
     }
@@ -107,14 +115,24 @@ struct ModeRow: View {
 
     let mode: BlockingMode
     let isSelected: Bool
+    var isLocked: Bool = false
     let onSelect: () -> Void
     let onEdit: () -> Void
 
     var body: some View {
         Button {
-            onSelect()
+            if !isLocked {
+                onSelect()
+            }
         } label: {
             HStack {
+                // Selection indicator when locked
+                if isLocked && isSelected {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.green)
+                }
+
                 Text(mode.name)
                     .font(.system(size: 17, weight: .medium))
                     .foregroundColor(.primary)
@@ -124,7 +142,7 @@ struct ModeRow: View {
                 Button {
                     onEdit()
                 } label: {
-                    Text("Edit")
+                    Text(isLocked ? "View" : "Edit")
                         .font(.system(size: 15))
                         .foregroundColor(.primary)
                 }
@@ -137,6 +155,7 @@ struct ModeRow: View {
             )
         }
         .buttonStyle(.plain)
+        .opacity(isLocked && !isSelected ? 0.5 : 1.0)
     }
 }
 
@@ -174,9 +193,18 @@ struct CreateModeRow: View {
 
 // MARK: - Previews
 
-#Preview {
+#Preview("Unlocked") {
     ModeSelectionSheet(
         modeManager: .preview,
-        isPresented: .constant(true)
+        isPresented: .constant(true),
+        isLocked: false
+    )
+}
+
+#Preview("Locked") {
+    ModeSelectionSheet(
+        modeManager: .preview,
+        isPresented: .constant(true),
+        isLocked: true
     )
 }

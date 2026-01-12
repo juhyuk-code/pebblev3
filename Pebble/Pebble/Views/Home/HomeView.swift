@@ -79,7 +79,7 @@ struct HomeView: View {
             emergencyOverlay
         }
         .sheet(isPresented: $showingModeSheet) {
-            ModeSelectionSheet(modeManager: modeManager, isPresented: $showingModeSheet)
+            ModeSelectionSheet(modeManager: modeManager, isPresented: $showingModeSheet, isLocked: viewModel.isLocked)
                 .presentationDetents([.medium, .large])
         }
         .alert("Scan Result", isPresented: $viewModel.showingScanResult) {

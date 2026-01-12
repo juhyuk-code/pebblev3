@@ -7,6 +7,7 @@ struct ModeEditView: View {
     @ObservedObject var modeManager: ModeManager
     @State var mode: BlockingMode
     let isNewMode: Bool
+    var isLocked: Bool = false
 
     @Environment(\.dismiss) private var dismiss
     @State private var showingAppPicker: Bool = false
@@ -20,6 +21,17 @@ struct ModeEditView: View {
         !mode.selection.applicationTokens.isEmpty ||
         !mode.selection.categoryTokens.isEmpty ||
         !mode.selection.webDomainTokens.isEmpty
+    }
+
+    /// Navigation title based on state
+    private var navigationTitle: String {
+        if isLocked {
+            return "View Mode"
+        } else if isNewMode {
+            return "Create Mode"
+        } else {
+            return "Edit Mode"
+        }
     }
 
     var body: some View {
@@ -37,14 +49,27 @@ struct ModeEditView: View {
                                 .foregroundColor(.secondary)
                                 .padding(.horizontal, 4)
 
-                            TextField("Enter mode name", text: $mode.name)
-                                .font(.system(size: 17))
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 14)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color(.systemGray6))
-                                )
+                            if isLocked {
+                                // Read-only display when locked
+                                Text(mode.name)
+                                    .font(.system(size: 17))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 14)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color(.systemGray6))
+                                    )
+                            } else {
+                                TextField("Enter mode name", text: $mode.name)
+                                    .font(.system(size: 17))
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 14)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color(.systemGray6))
+                                    )
+                            }
                         }
                         .padding(.horizontal, 20)
 
@@ -55,29 +80,31 @@ struct ModeEditView: View {
                                 .foregroundColor(.secondary)
                                 .padding(.horizontal, 4)
 
-                            // Select apps button
-                            Button {
-                                showingAppPicker = true
-                            } label: {
-                                HStack {
-                                    Text("Select apps to block")
-                                        .font(.system(size: 17))
-                                        .foregroundColor(.primary)
+                            // Select apps button (hidden when locked)
+                            if !isLocked {
+                                Button {
+                                    showingAppPicker = true
+                                } label: {
+                                    HStack {
+                                        Text("Select apps to block")
+                                            .font(.system(size: 17))
+                                            .foregroundColor(.primary)
 
-                                    Spacer()
+                                        Spacer()
 
-                                    Image(systemName: "chevron.right")
-                                        .font(.system(size: 14, weight: .semibold))
-                                        .foregroundColor(.secondary)
+                                        Image(systemName: "chevron.right")
+                                            .font(.system(size: 14, weight: .semibold))
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 14)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color(.systemGray6))
+                                    )
                                 }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 14)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color(.systemGray6))
-                                )
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
 
                             // Summary of blocked items
                             if hasBlockedItems {
@@ -164,8 +191,8 @@ struct ModeEditView: View {
                         }
                         .padding(.horizontal, 20)
 
-                        // Delete button (only for non-default modes)
-                        if !isNewMode && !mode.isDefault {
+                        // Delete button (only for non-default modes, hidden when locked)
+                        if !isNewMode && !mode.isDefault && !isLocked {
                             Button {
                                 showingDeleteConfirmation = true
                             } label: {
@@ -181,20 +208,29 @@ struct ModeEditView: View {
                     .padding(.top, 24)
                 }
             }
-            .navigationTitle(isNewMode ? "Create Mode" : "Edit Mode")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
+                if isLocked {
+                    // Just a Done button when viewing in locked mode
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") {
+                            dismiss()
+                        }
                     }
-                }
+                } else {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                    }
 
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        saveMode()
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Save") {
+                            saveMode()
+                        }
+                        .disabled(mode.name.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
-                    .disabled(mode.name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
             .familyActivityPicker(
