@@ -10,6 +10,7 @@ struct PebbleApp: App {
     @StateObject private var stateManager: StateManager
     @StateObject private var dashboardViewModel: DashboardViewModel
     @StateObject private var settingsViewModel: SettingsViewModel
+    @StateObject private var modeManager: ModeManager
 
     // MARK: - Services
 
@@ -29,6 +30,9 @@ struct PebbleApp: App {
         // Initialize state manager
         let state = StateManager(blockingService: blocking)
 
+        // Initialize mode manager
+        let modes = ModeManager()
+
         // Initialize view models
         let dashboard = DashboardViewModel(
             stateManager: state,
@@ -41,6 +45,7 @@ struct PebbleApp: App {
         _stateManager = StateObject(wrappedValue: state)
         _dashboardViewModel = StateObject(wrappedValue: dashboard)
         _settingsViewModel = StateObject(wrappedValue: settings)
+        _modeManager = StateObject(wrappedValue: modes)
     }
 
     // MARK: - Body
@@ -49,7 +54,8 @@ struct PebbleApp: App {
         WindowGroup {
             MainTabView(
                 dashboardViewModel: dashboardViewModel,
-                settingsViewModel: settingsViewModel
+                settingsViewModel: settingsViewModel,
+                modeManager: modeManager
             )
             .onAppear {
                 // Restore state on app launch

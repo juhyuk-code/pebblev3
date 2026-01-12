@@ -3,8 +3,9 @@ import SwiftUI
 /// Main tab bar navigation
 struct MainTabView: View {
 
-    @StateObject var dashboardViewModel: DashboardViewModel
-    @StateObject var settingsViewModel: SettingsViewModel
+    @ObservedObject var dashboardViewModel: DashboardViewModel
+    @ObservedObject var settingsViewModel: SettingsViewModel
+    @ObservedObject var modeManager: ModeManager
 
     @State private var selectedTab: Tab = .pebble
 
@@ -18,7 +19,7 @@ struct MainTabView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             // Pebble (Home) Tab
-            HomeView(viewModel: dashboardViewModel)
+            HomeView(viewModel: dashboardViewModel, modeManager: modeManager)
                 .tabItem {
                     Label("Pebble", systemImage: "circle.fill")
                 }
@@ -54,6 +55,7 @@ struct MainTabView: View {
 #Preview {
     MainTabView(
         dashboardViewModel: .preview,
-        settingsViewModel: .preview
+        settingsViewModel: .preview,
+        modeManager: .preview
     )
 }

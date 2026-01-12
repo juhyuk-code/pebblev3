@@ -1,20 +1,20 @@
 import SwiftUI
 
-/// Dropdown selector for blocking modes
+/// Dropdown selector for blocking modes - tapping opens the mode selection sheet
 struct ModeSelector: View {
 
-    @Binding var selectedMode: BlockingMode
-    @State private var showingPicker = false
+    @ObservedObject var modeManager: ModeManager
+    @Binding var showingSheet: Bool
 
     var body: some View {
         Button {
-            showingPicker = true
+            showingSheet = true
         } label: {
             HStack(spacing: 6) {
                 Text("Mode:")
                     .foregroundColor(.secondary)
 
-                Text(selectedMode.displayName)
+                Text(modeManager.selectedMode?.name ?? "Select Mode")
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
 
@@ -24,36 +24,14 @@ struct ModeSelector: View {
             }
             .font(.system(size: 16))
         }
-        .confirmationDialog("Select Mode", isPresented: $showingPicker) {
-            ForEach(BlockingMode.allCases, id: \.self) { mode in
-                Button(mode.displayName) {
-                    selectedMode = mode
-                }
-            }
-            Button("Cancel", role: .cancel) {}
-        }
-    }
-}
-
-/// Available blocking modes
-enum BlockingMode: String, CaseIterable, Codable {
-    case mindful = "mindful"
-    case focus = "focus"
-    case sleep = "sleep"
-    case custom = "custom"
-
-    var displayName: String {
-        switch self {
-        case .mindful: return "Mindful Mode"
-        case .focus: return "Focus Mode"
-        case .sleep: return "Sleep Mode"
-        case .custom: return "Custom Mode"
-        }
     }
 }
 
 // MARK: - Previews
 
 #Preview {
-    ModeSelector(selectedMode: .constant(.mindful))
+    ModeSelector(
+        modeManager: .preview,
+        showingSheet: .constant(false)
+    )
 }

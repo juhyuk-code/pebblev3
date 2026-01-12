@@ -4,7 +4,8 @@ import SwiftUI
 struct HomeView: View {
 
     @ObservedObject var viewModel: DashboardViewModel
-    @State private var selectedMode: BlockingMode = .mindful
+    @ObservedObject var modeManager: ModeManager
+    @State private var showingModeSheet: Bool = false
 
     // Background color matching Brick's warm gray
     private let backgroundColor = Color(red: 0.93, green: 0.91, blue: 0.89)
@@ -26,13 +27,13 @@ struct HomeView: View {
                 PebbleDeviceView(isScanning: viewModel.isScanning)
 
                 // Mode selector
-                ModeSelector(selectedMode: $selectedMode)
+                ModeSelector(modeManager: modeManager, showingSheet: $showingModeSheet)
                     .padding(.top, 24)
 
                 // Blocking summary
                 BlockingSummary(
-                    appCount: viewModel.blockedAppCount,
-                    websiteCount: viewModel.blockedWebsiteCount
+                    appCount: modeManager.selectedMode?.appCount ?? 0,
+                    websiteCount: modeManager.selectedMode?.websiteCount ?? 0
                 )
                 .padding(.top, 8)
 
@@ -61,6 +62,10 @@ struct HomeView: View {
 
             // Emergency overlay (if needed)
             emergencyOverlay
+        }
+        .sheet(isPresented: $showingModeSheet) {
+            ModeSelectionSheet(modeManager: modeManager, isPresented: $showingModeSheet)
+                .presentationDetents([.medium, .large])
         }
         .alert("Scan Result", isPresented: $viewModel.showingScanResult) {
             Button("OK") {
@@ -119,5 +124,5 @@ struct HomeView: View {
 // MARK: - Previews
 
 #Preview {
-    HomeView(viewModel: .preview)
+    HomeView(viewModel: .preview, modeManager: .preview)
 }
