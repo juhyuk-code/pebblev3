@@ -9,6 +9,7 @@ final class DashboardViewModel: ObservableObject {
     // MARK: - Published State
 
     @Published var lockState: LockState = .free
+    @Published var lockedAt: Date?
     @Published var isScanning: Bool = false
     @Published var scanResult: NFCScanResult?
     @Published var showingScanResult: Bool = false
@@ -52,6 +53,10 @@ final class DashboardViewModel: ObservableObject {
         stateManager.$lockState
             .receive(on: DispatchQueue.main)
             .assign(to: &$lockState)
+
+        stateManager.$lockedAt
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$lockedAt)
 
         stateManager.$emergencyOverride
             .receive(on: DispatchQueue.main)

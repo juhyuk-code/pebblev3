@@ -7,6 +7,7 @@ final class StateManager: ObservableObject {
     // MARK: - Published State
 
     @Published private(set) var lockState: LockState
+    @Published private(set) var lockedAt: Date?
     @Published private(set) var emergencyOverride: EmergencyOverride
     @Published private(set) var hasCompletedOnboarding: Bool
 
@@ -26,6 +27,7 @@ final class StateManager: ObservableObject {
 
         // Load persisted state
         self.lockState = Self.loadLockState(from: defaults)
+        self.lockedAt = Self.loadLockedAt(from: defaults)
         self.emergencyOverride = Self.loadEmergencyOverride(from: defaults)
         self.hasCompletedOnboarding = defaults.bool(forKey: Constants.StorageKeys.hasCompletedOnboarding)
     }
@@ -54,11 +56,19 @@ final class StateManager: ObservableObject {
 
         switch state {
         case .locked:
+            // Record when we locked
+            lockedAt = Date()
+            saveLockedAt(lockedAt)
+
             let selection = blockingService.currentSelection
             blockingService.applyShield(for: selection)
             blockingService.setAppRemovalPrevention(enabled: true)
 
         case .free:
+            // Clear locked timestamp
+            lockedAt = nil
+            saveLockedAt(nil)
+
             blockingService.removeShield()
             blockingService.setAppRemovalPrevention(enabled: false)
         }
@@ -94,6 +104,14 @@ final class StateManager: ObservableObject {
     private static func loadLockState(from defaults: UserDefaults) -> LockState {
         let isLocked = defaults.bool(forKey: Constants.StorageKeys.lockState)
         return isLocked ? .locked : .free
+    }
+
+    private func saveLockedAt(_ date: Date?) {
+        defaults.set(date, forKey: Constants.StorageKeys.lockedAt)
+    }
+
+    private static func loadLockedAt(from defaults: UserDefaults) -> Date? {
+        defaults.object(forKey: Constants.StorageKeys.lockedAt) as? Date
     }
 
     private func saveEmergencyOverride(_ override: EmergencyOverride) {

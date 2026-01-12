@@ -24,6 +24,7 @@ enum Constants {
 
     enum StorageKeys {
         static let lockState = "pebble.lockState"
+        static let lockedAt = "pebble.lockedAt"
         static let emergencyUsesRemaining = "pebble.emergencyUsesRemaining"
         static let appSelection = "pebble.appSelection"
         static let hasCompletedOnboarding = "pebble.hasCompletedOnboarding"

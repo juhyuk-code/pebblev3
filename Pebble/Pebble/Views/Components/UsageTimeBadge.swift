@@ -1,14 +1,18 @@
 import SwiftUI
 
-/// Pill-shaped badge showing usage time today
+/// Pill-shaped badge showing pebbled time
 struct UsageTimeBadge: View {
 
-    let hours: Int
-    let minutes: Int
+    /// The date when pebbling started (nil if not pebbled)
+    let startDate: Date?
+
+    /// Timer to update the display every second
+    @State private var now = Date()
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         HStack(spacing: 4) {
-            Text("\(hours)h \(minutes)m")
+            Text(formattedTime)
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
 
             Text("today")
@@ -21,15 +25,34 @@ struct UsageTimeBadge: View {
             Capsule()
                 .fill(Color(.systemGray6))
         )
+        .onReceive(timer) { _ in
+            now = Date()
+        }
+    }
+
+    private var formattedTime: String {
+        guard let start = startDate else {
+            return "0h 0m"
+        }
+
+        let elapsed = now.timeIntervalSince(start)
+        let hours = Int(elapsed) / 3600
+        let minutes = (Int(elapsed) % 3600) / 60
+
+        return "\(hours)h \(minutes)m"
     }
 }
 
 // MARK: - Previews
 
-#Preview {
-    UsageTimeBadge(hours: 0, minutes: 0)
+#Preview("Not Pebbled") {
+    UsageTimeBadge(startDate: nil)
 }
 
-#Preview("With Time") {
-    UsageTimeBadge(hours: 2, minutes: 34)
+#Preview("Just Started") {
+    UsageTimeBadge(startDate: Date())
+}
+
+#Preview("1 Hour Ago") {
+    UsageTimeBadge(startDate: Date().addingTimeInterval(-3600))
 }

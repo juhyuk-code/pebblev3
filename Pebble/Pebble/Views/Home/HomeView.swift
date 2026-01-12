@@ -7,34 +7,54 @@ struct HomeView: View {
     @ObservedObject var modeManager: ModeManager
     @State private var showingModeSheet: Bool = false
 
-    // Background color matching Brick's warm gray
-    private let backgroundColor = Color(red: 0.93, green: 0.91, blue: 0.89)
+    // Background colors
+    private let freeBackgroundColor = Color(red: 0.93, green: 0.91, blue: 0.89)
+    private let lockedBackgroundColor = Color.black
+
+    private var backgroundColor: Color {
+        viewModel.isLocked ? lockedBackgroundColor : freeBackgroundColor
+    }
+
+    private var textColor: Color {
+        viewModel.isLocked ? .white : .primary
+    }
+
+    private var secondaryTextColor: Color {
+        viewModel.isLocked ? .gray : .secondary
+    }
+
+    private var buttonBackgroundColor: Color {
+        viewModel.isLocked ? Color(.systemGray6) : Color(.systemGray5)
+    }
 
     var body: some View {
         ZStack {
             // Background
             backgroundColor
                 .ignoresSafeArea()
+                .animation(.easeInOut(duration: 0.3), value: viewModel.isLocked)
 
             VStack(spacing: 0) {
                 // Usage time badge at top
-                UsageTimeBadge(hours: 0, minutes: 0)
+                UsageTimeBadge(startDate: viewModel.lockedAt)
                     .padding(.top, 40)
 
                 Spacer()
 
-                // Pebble device with scan brackets
+                // Pebble device image
                 PebbleDeviceView(isScanning: viewModel.isScanning)
 
                 // Mode selector
                 ModeSelector(modeManager: modeManager, showingSheet: $showingModeSheet)
                     .padding(.top, 24)
+                    .foregroundColor(textColor)
 
                 // Blocking summary
                 BlockingSummary(
                     appCount: modeManager.selectedMode?.appCount ?? 0,
                     websiteCount: modeManager.selectedMode?.websiteCount ?? 0
                 )
+                .foregroundColor(secondaryTextColor)
                 .padding(.top, 8)
 
                 Spacer()
@@ -45,14 +65,14 @@ struct HomeView: View {
                         await viewModel.scanPebble()
                     }
                 } label: {
-                    Text("Pebble device")
+                    Text(viewModel.isLocked ? "Unpebble device" : "Pebble device")
                         .font(.system(size: 17, weight: .medium))
                         .foregroundColor(.primary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 18)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(Color(.systemGray5))
+                                .fill(buttonBackgroundColor)
                         )
                 }
                 .padding(.horizontal, 24)
@@ -123,6 +143,6 @@ struct HomeView: View {
 
 // MARK: - Previews
 
-#Preview {
+#Preview("Free") {
     HomeView(viewModel: .preview, modeManager: .preview)
 }
