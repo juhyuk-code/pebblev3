@@ -84,86 +84,60 @@ struct ModeEditView: View {
                                 VStack(spacing: 0) {
                                     // Apps
                                     ForEach(Array(mode.selection.applicationTokens), id: \.self) { token in
-                                        HStack {
-                                            Label(token)
-                                                .labelStyle(.iconOnly)
-                                                .scaleEffect(0.8)
-                                                .frame(width: 32, height: 32)
+                                        VStack(spacing: 0) {
+                                            HStack {
+                                                Label(token)
+                                                    .font(.system(size: 16))
+                                                Spacer()
+                                            }
+                                            .padding(.horizontal, 16)
+                                            .padding(.vertical, 12)
 
-                                            Label(token)
-                                                .labelStyle(.titleOnly)
-                                                .font(.system(size: 16))
-                                                .foregroundColor(.primary)
-
-                                            Spacer()
-                                        }
-                                        .padding(.horizontal, 16)
-                                        .padding(.vertical, 10)
-
-                                        if token != mode.selection.applicationTokens.sorted(by: { "\($0)" < "\($1)" }).last ||
-                                           !mode.selection.categoryTokens.isEmpty ||
-                                           !mode.selection.webDomainTokens.isEmpty {
                                             Divider()
-                                                .padding(.leading, 56)
+                                                .padding(.leading, 16)
                                         }
                                     }
 
                                     // Categories
                                     ForEach(Array(mode.selection.categoryTokens), id: \.self) { token in
-                                        HStack {
-                                            Label(token)
-                                                .labelStyle(.iconOnly)
-                                                .scaleEffect(0.8)
-                                                .frame(width: 32, height: 32)
+                                        VStack(spacing: 0) {
+                                            HStack {
+                                                Label(token)
+                                                    .font(.system(size: 16))
 
-                                            Label(token)
-                                                .labelStyle(.titleOnly)
-                                                .font(.system(size: 16))
-                                                .foregroundColor(.primary)
+                                                Spacer()
 
-                                            Spacer()
+                                                Text("Category")
+                                                    .font(.system(size: 12))
+                                                    .foregroundColor(.secondary)
+                                                    .padding(.horizontal, 8)
+                                                    .padding(.vertical, 4)
+                                                    .background(
+                                                        Capsule()
+                                                            .fill(Color(.systemGray5))
+                                                    )
+                                            }
+                                            .padding(.horizontal, 16)
+                                            .padding(.vertical, 12)
 
-                                            Text("Category")
-                                                .font(.system(size: 12))
-                                                .foregroundColor(.secondary)
-                                                .padding(.horizontal, 8)
-                                                .padding(.vertical, 4)
-                                                .background(
-                                                    Capsule()
-                                                        .fill(Color(.systemGray5))
-                                                )
-                                        }
-                                        .padding(.horizontal, 16)
-                                        .padding(.vertical, 10)
-
-                                        if token != mode.selection.categoryTokens.sorted(by: { "\($0)" < "\($1)" }).last ||
-                                           !mode.selection.webDomainTokens.isEmpty {
                                             Divider()
-                                                .padding(.leading, 56)
+                                                .padding(.leading, 16)
                                         }
                                     }
 
                                     // Websites
                                     ForEach(Array(mode.selection.webDomainTokens), id: \.self) { token in
-                                        HStack {
-                                            Image(systemName: "globe")
-                                                .font(.system(size: 20))
-                                                .foregroundColor(.secondary)
-                                                .frame(width: 32, height: 32)
+                                        VStack(spacing: 0) {
+                                            HStack {
+                                                Label(token)
+                                                    .font(.system(size: 16))
+                                                Spacer()
+                                            }
+                                            .padding(.horizontal, 16)
+                                            .padding(.vertical, 12)
 
-                                            Label(token)
-                                                .labelStyle(.titleOnly)
-                                                .font(.system(size: 16))
-                                                .foregroundColor(.primary)
-
-                                            Spacer()
-                                        }
-                                        .padding(.horizontal, 16)
-                                        .padding(.vertical, 10)
-
-                                        if token != mode.selection.webDomainTokens.sorted(by: { "\($0)" < "\($1)" }).last {
                                             Divider()
-                                                .padding(.leading, 56)
+                                                .padding(.leading, 16)
                                         }
                                     }
                                 }
