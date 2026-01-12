@@ -33,7 +33,7 @@ final class BlockingService: BlockingServiceProtocol {
     private let authorizationCenter = AuthorizationCenter.shared
 
     /// App Group identifier for shared storage between main app and extensions
-    private static let appGroupIdentifier = "group.com.pebble.app"
+    private static let appGroupIdentifier = "group.com.pebbledevice.app"
 
     /// Shared UserDefaults for app group
     private var sharedDefaults: UserDefaults? {

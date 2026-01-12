@@ -22,7 +22,7 @@ targets:
       - Pebble
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.pebble.app
+        PRODUCT_BUNDLE_IDENTIFIER: com.pebbledevice.app
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: "1"
@@ -44,7 +44,7 @@ targets:
       path: PebbleShield/Info.plist
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.pebble.app.shield
+        PRODUCT_BUNDLE_IDENTIFIER: com.pebbledevice.app.shield
         TARGETED_DEVICE_FAMILY: "1"
         SWIFT_VERSION: "5.9"
         CODE_SIGN_ENTITLEMENTS: PebbleShield/PebbleShield.entitlements
