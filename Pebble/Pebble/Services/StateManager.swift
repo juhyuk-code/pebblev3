@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import FamilyControls
 
 /// Manages persistent app state
 final class StateManager: ObservableObject {
@@ -15,6 +16,9 @@ final class StateManager: ObservableObject {
 
     private let blockingService: BlockingServiceProtocol
     private let defaults: UserDefaults
+
+    /// Closure to get the current app selection from ModeManager
+    var getCurrentSelection: (() -> FamilyActivitySelection)?
 
     // MARK: - Initialization
 
@@ -37,7 +41,7 @@ final class StateManager: ObservableObject {
     /// Called on app launch to restore blocking state
     func restoreState() {
         if lockState == .locked {
-            let selection = blockingService.currentSelection
+            let selection = getCurrentSelection?() ?? FamilyActivitySelection()
             blockingService.applyShield(for: selection)
             blockingService.setAppRemovalPrevention(enabled: true)
         }
@@ -60,7 +64,9 @@ final class StateManager: ObservableObject {
             lockedAt = Date()
             saveLockedAt(lockedAt)
 
-            let selection = blockingService.currentSelection
+            // Get selection from ModeManager via closure
+            let selection = getCurrentSelection?() ?? FamilyActivitySelection()
+            print("[StateManager] Locking with selection - Apps: \(selection.applicationTokens.count), Categories: \(selection.categoryTokens.count)")
             blockingService.applyShield(for: selection)
             blockingService.setAppRemovalPrevention(enabled: true)
 
@@ -69,6 +75,7 @@ final class StateManager: ObservableObject {
             lockedAt = nil
             saveLockedAt(nil)
 
+            print("[StateManager] Unlocking - removing shield")
             blockingService.removeShield()
             blockingService.setAppRemovalPrevention(enabled: false)
         }

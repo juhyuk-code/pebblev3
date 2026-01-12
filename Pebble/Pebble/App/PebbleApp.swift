@@ -27,11 +27,16 @@ struct PebbleApp: App {
         self.blockingService = blocking
         self.nfcService = nfc
 
+        // Initialize mode manager first
+        let modes = ModeManager()
+
         // Initialize state manager
         let state = StateManager(blockingService: blocking)
 
-        // Initialize mode manager
-        let modes = ModeManager()
+        // Connect StateManager to ModeManager's selection
+        state.getCurrentSelection = { [weak modes] in
+            modes?.selectedMode?.selection ?? FamilyActivitySelection()
+        }
 
         // Initialize view models
         let dashboard = DashboardViewModel(
